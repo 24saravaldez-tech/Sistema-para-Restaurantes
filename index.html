@@ -139,7 +139,7 @@
               <p class="precio">Q48</p>
               <button type="button">Agregar</button>
             </div>
-          </article> -->
+          </article>  -->
         </div>
       </section>
 
@@ -172,32 +172,22 @@
                 <th>Subtotal</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Pizza Margarita</td>
-                <td>Q65</td>
-                <td>Q65</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Limonada</td>
-                <td>Q18</td>
-                <td>Q36</td>
-              </tr>
+            <tbody id="tabla-pedido">
+
             </tbody>
           </table>
         </div>
 
         <div class="totales d-none">
-          <p><span>Subtotal:</span> <strong>Q101</strong></p>
-          <p><span>Impuestos:</span> <strong>Q12</strong></p>
-          <p class="total"><span><i class="fa-solid fa-money-bill-wave"></i> Total:</span> <strong>Q113</strong></p>
+          <p><span>Subtotal:</span> <strong id="subtotal"></strong></p>
+          <p><span>Impuestos:</span> <strong id="impuestos"></strong></p>
+          <p class="total"><span><i class="fa-solid fa-money-bill-wave"></i> Total:</span> <strong id="Total"></strong></p>
         </div>
 
         <div class="acciones d-none">
           <button type="button" class="btn cobrar">Cobrar</button>
           <button type="button" class="btn cancelar">Cancelar Comanda</button>
+           <button type="button" class="btn cerrar">Cerrar Mesa</button>
         </div>
       </aside>
     </main>

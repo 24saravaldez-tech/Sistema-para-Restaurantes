@@ -23,7 +23,7 @@ class Producto {
         return this.#nombre
     }
     get precio() {
-        return this.#precio.toFixed(2)
+        return this.#precio
     } get id() {
         return this.#id
     }
@@ -112,7 +112,7 @@ class Mesa {
     }
 
     eliminarComanda() {
-
+        this.#comandas.pop()
     }
 
     aperturarMesa() {
@@ -182,9 +182,9 @@ class Restaurante {
         let html = ''
         for (let item of this.#mesas) {
             html += `<article data-id=${item.id} class="mesa-card ${item.estado.toLowerCase()}">
-                        <h3 data-id=${item.id}>${item.nombre}</h3>
-                        <p data-id=${item.id}><span class="dot"></span> ${item.estado}</p>
-                     </article>`
+                    <h3 data-id=${item.id}>${item.nombre}</h3>
+                    <p data-id=${item.id}><span class="dot"></span> ${item.estado}</p>
+            </article>`
         }
         return html;
     }
@@ -202,6 +202,22 @@ class Pedido {
         this.#precio = precio
     }
 
+    get cantidad() {
+        return this.#cantidad
+    }
+
+    set cantidad(value) {
+        this.#cantidad = value
+    }
+
+    get nombre() {
+        return this.#nombre
+    }
+
+    get precio() {
+        return this.#precio
+    }
+
     get subtotal() {
         this.#subtotal = this.#cantidad * this.#precio
         return this.#subtotal
@@ -209,20 +225,64 @@ class Pedido {
 }
 
 class Comanda {
-    #pedidos
-    #mesas
+    #pedidos;
+    #mesas;
+    #impuestos;
+    #estados;
 
     constructor(mesa) { //mesas sera un arreglo
         this.#pedidos = []
         this.#mesas = mesa
+        this.#estados = 'Pendiente'
+    }
+
+    get subTotal() {
+        return this.#pedidos.reduce((acumulador, acrual) => acumulador + parseFloat(acrual.subtotal), 0)
     }
 
     agregarPedido(pedido) {
-        this.#pedidos = [...this.#pedidos, pedido]
+        let pedidoEncontrar = this.#pedidos.find(item => item.nombre == pedido.nombre)
+        if (pedidoEncontrar == undefined) {
+            this.#pedidos = [...this.#pedidos, pedido]
+        } else {
+            pedidoEncontrar.cantidad++
+        }
+
     }
 
     agregarMesa(mesa) {
-        this.#mesas = [this.#mesas, mesa]
+        this.#mesas = [...this.#mesas, mesa]
+    }
+
+    renderizar() {
+        let html = ''
+        for (let pedido of this.#pedidos) {
+            html += `              <tr>
+                <td>${pedido.cantidad}</td>
+                <td>${pedido.nombre}</td>
+                <td>${pedido.precio.toFixed(2)}</td>
+                <td>${pedido.subtotal.toFixed(2)}</td>
+              </tr>`
+        }
+        let subto = this.subTotal
+        let impues = this.subTotal * 0.05
+        let totalito = (subto + impues).toFixed(2)
+
+        tablaPedido.innerHTML = html
+        subtotal.textContent = subto.toFixed(2)
+        impuestos.textContent = impues.toFixed(2)
+        total.textContent = totalito
+
+    }
+
+    cobrar() {
+        this.#estados = 'Preparando';
+        tablaPedido.innerHTML = '';
+        subtotal.textContent = '00.00'
+        impuestos.textContent = '00.00'
+        total.textContent = '00.00'
+
+        alert('Comanda enviada')
     }
 }
 
@@ -250,12 +310,21 @@ let totales = document.querySelector('.totales')
 let acciones = document.querySelector('.acciones')
 let menuGrid = document.querySelector('.menu-grid')
 
+let subtotal = document.querySelector('#subtotal')
+let impuestos = document.querySelector('#impuestos')
+let total = document.querySelector('#Total')
+let tablaPedido = document.querySelector('#tabla-pedido')
+let btnCobrar = document.querySelector('.cobrar')
+let btnFinalizar = document.querySelector('.cerrar')
+
 contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
 contenedorNoMesas.textContent = `${restaurante.mesasNo} Mesas`
 let mesaActualSeleccionada;
 let mesaSeleccionada;
 
 let btnEvento = (event) => {
+
+
     if (mesaActualSeleccionada != undefined) {
         mesaActualSeleccionada.style = ''
     }
@@ -267,9 +336,12 @@ let btnEvento = (event) => {
         mesaSeleccionada.muestrame()
     } else {
         mesaSeleccionada.mostrarCuenta()
+        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
     }
     // mesaSeleccionada.muestrame()
     mesaActualSeleccionada = event.target
+    btnFinalizar.disabled = true
+
 }
 
 let btnEventoRojo = (event) => {
@@ -285,10 +357,12 @@ botonUnirMesa.addEventListener('click', (event) => {
     contenedorMesas.addEventListener('click', btnEventoRojo)
 
     if (click) {
-        let comandaObjeto = new Comanda(mesaSeleccionada.id)
+        let comandaObjeto = new Comanda([mesaSeleccionada.id])
 
         for (let i = 0; i < mesaSeleccionada.mesasUnidas.length; i++) {
+
             let mesaAUnir = restaurante.mesas.find(item => item.id == mesaSeleccionada.mesasUnidas[i])
+
             mesaAUnir.aperturarMesa();
             comandaObjeto.agregarMesa(mesaAUnir.id)
             mesaAUnir.ingresarComanda(comandaObjeto)
@@ -303,28 +377,28 @@ botonUnirMesa.addEventListener('click', (event) => {
         contenedorMesas.removeEventListener('click', btnEventoRojo)
         contenedorMesas.addEventListener('click', btnEvento)
         mesaSeleccionada.mostrarCuenta()
+        comandaObjeto.renderizar();
     } else {
         botonUnirMesa.textContent = "Unir Mesas"
         botonUnirMesa.style = 'background-color: skyblue'
         //Mesa2
         mesaSeleccionada = restaurante.mesas.find(item => item.id == event.target.dataset.id)
+        click = true
     }
-    click = true
-
 })
 let productosHtml = ''
 for (let producto of productos) {
     productosHtml += `
-     <article class="producto-card">
-            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80"
-                        alt="Hamburguesa" />
-            <div class="producto-info">
-                <h3>${producto.nombre}</h3>
-                <p class="categoria comida"><i class="fa-solid fa-utensils"></i> Comida</p>
-                <p class="precio">Q${producto.precio}</p>
-                <button data-id= ${producto.id} type="button">Agregar</button>
-            </div>
-        </article>`
+<article class="producto-card">
+    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80"
+            alt="Hamburguesa" />
+    <div class="producto-info">
+        <h3>${producto.nombre}</h3>
+        <p class="categoria comida"><i class="fa-solid fa-utensils"></i> Comida</p>
+        <p class="precio">Q${producto.precio}</p>
+        <button data-id= ${producto.id} type="button">Agregar</button>
+    </div>
+</article>`
 }
 
 menuGrid.innerHTML = productosHtml
@@ -335,8 +409,35 @@ menuGrid.addEventListener('click', (event) => {
         //Crear el pedido
         const pedido = new Pedido(1, producto.nombre, producto.precio)
         //Agregar el pedido ala comanda
-        mesaSeleccionada.comandas[0].agregarPedido(pedido)
+        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].agregarPedido(pedido)
         console.log(mesaSeleccionada)
-        //Dibujar comanda
+
+        //Dibujar visualmente la comanda
+        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
+
+        btnFinalizar.disabled = true
     }
+})
+
+btnCobrar.addEventListener('click', (event) => {
+    mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].cobrar()
+    const nuevaComanda = new Comanda([mesaSeleccionada.id])
+    for (let i = 0; i < mesaSeleccionada.mesasUnidas.length; i++) {
+        let mesaAUnir = restaurante.mesas.find(item => item.id == mesaSeleccionada.mesasUnidas[i])
+        mesaAUnir.ingresarComanda(nuevaComanda)
+    }
+    mesaSeleccionada.ingresarComanda(nuevaComanda)
+    btnFinalizar.disabled = false
+})
+
+btnFinalizar.addEventListener('click', (event) => {
+    mesaSeleccionada.cobrarMesa()
+        for (let i = 0; i < mesaSeleccionada.mesasUnidas.length; i++) {
+        let mesaAUnir = restaurante.mesas.find(item => item.id == mesaSeleccionada.mesasUnidas[i])
+        mesaAUnir.cobrarMesa()
+    }
+
+    mesaSeleccionada.eliminarComanda()
+   contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
+   panelComanda.classList.add('d-none')
 })

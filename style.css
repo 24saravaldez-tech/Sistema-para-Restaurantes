@@ -1,15 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@600;700&display=swap");
 
 :root {
-  --bg: #f4f7fb;
-  --bg-soft: #ffffff;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --primary: #0f766e;
-  --primary-dark: #0b5e59;
-  --danger: #dc2626;
-  --warning: #f59e0b;
-  --success: #16a34a;
+  --bg: #F4F7FB;
+  --bg-soft: #FFFFFF;
+  --text: #1F2937;
+  --muted: #6B7280;
+  --primary: #0F766E;
+  --primary-dark: #0B5E59;
+  --danger: #DC2626;
+  --warning: #F59E0B;
+  --success: #16A34A;
   --shadow-sm: 0 10px 25px rgba(31, 41, 55, 0.08);
   --shadow-lg: 0 18px 38px rgba(31, 41, 55, 0.14);
   --radius-lg: 18px;
@@ -155,7 +155,7 @@ body {
 }
 
 .mesa-card.pago p {
-  color: #b77900;
+  color: #B77900;
 }
 
 .mesa-card.pago .dot {
@@ -211,18 +211,18 @@ body {
 }
 
 .categoria.comida {
-  color: #a24600;
-  background: #ffedd5;
+  color: #A24600;
+  background: #FFEDD5;
 }
 
 .categoria.bebida {
-  color: #1d4ed8;
-  background: #dbeafe;
+  color: #1D4ED8;
+  background: #DBEAFE;
 }
 
 .categoria.postre {
-  color: #9d174d;
-  background: #fce7f3;
+  color: #9D174D;
+  background: #FCE7F3;
 }
 
 .precio {
@@ -262,7 +262,7 @@ body {
   padding: 0.8rem;
   border-radius: var(--radius-md);
   border: 1px solid rgba(15, 118, 110, 0.2);
-  background: linear-gradient(135deg, #f8fffd, #eff6ff);
+  background: linear-gradient(135deg, #F8FFFD, #EFF6FF);
   display: grid;
   gap: 0.72rem;
 }
@@ -282,9 +282,6 @@ body {
   font-weight: 800;
   color: var(--primary-dark);
 }
-.d-none{
-    display: none;
-}
 
 .mesa-estado {
   font-size: 0.74rem;
@@ -294,29 +291,24 @@ body {
 }
 
 .mesa-estado.ocupada {
-  color: #991b1b;
-  background: #fee2e2;
+  color: #991B1B;
+  background: #FEE2E2;
 }
 
 .mesa-estado.libre {
   color: var(--success);
-  background: #d2f5d1;
+  background: #D2F5D1;
 }
-
-/* .mesa-estado.pago {
-  color: var(--warning);
-  background: #f3f5d1;
-} */
 
 .mesa-detalle-info {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 2fr;
   gap: 0.45rem 0.75rem;
 }
 
 .mesa-detalle-info p {
   font-size: 0.82rem;
-  color: #1e1e1e;
+  color: #334155;
 }
 
 .mesa-detalle-acciones {
@@ -339,7 +331,7 @@ body {
 
 .btn.unir-mesa {
   background: #fff;
-  color: #1e3a8a;
+  color: #1E3A8A;
   border: 1px solid rgba(30, 58, 138, 0.3);
 }
 
@@ -355,14 +347,14 @@ table {
 }
 
 thead {
-  background: #f8fafc;
+  background: #F8FAFC;
 }
 
 th,
 td {
   text-align: left;
   padding: 0.7rem 0.55rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #E5E7EB;
   font-size: 0.84rem;
 }
 
@@ -374,7 +366,7 @@ th {
   margin: 0.9rem 1rem;
   border-radius: var(--radius-md);
   padding: 0.75rem;
-  background: #f8fafc;
+  background: #F8FAFC;
   border: 1px solid rgba(15, 118, 110, 0.18);
 }
 
@@ -389,7 +381,7 @@ th {
 .totales .total {
   margin-top: 0.45rem;
   padding-top: 0.45rem;
-  border-top: 1px dashed #d1d5db;
+  border-top: 1px dashed #D1D5DB;
   font-size: 1rem;
 }
 
@@ -446,4 +438,8 @@ th {
   .mesa-detalle-acciones {
     grid-template-columns: 1fr;
   }
+}
+
+.d-none {
+  display: none;
 }
