@@ -22,9 +22,12 @@ class Producto {
     get nombre() {
         return this.#nombre
     }
+    
     get precio() {
         return this.#precio
-    } get id() {
+    } 
+    
+    get id() {
         return this.#id
     }
 
@@ -122,8 +125,8 @@ class Mesa {
     muestrame() {
         tituloMesa.innerHTML = `<i class="fa-solid fa-ticket" aria-hidden="true"></i> Comanda ${this.nombre}`
 
-        mesaDetalleInfo.innerHTML = `  <p><strong>Mesa:</strong> ${this.nombre.split(' ')[1]} </p>
-            <p><strong>Capacidad:</strong> ${this.personas}   comensales</p>`
+        mesaDetalleInfo.innerHTML = `<p><strong>Mesa:</strong> ${this.nombre.split(' ')[1]} </p>
+            <p><strong>Capacidad:</strong> ${this.personas} comensales</p>`
         estadoMesa.innerHTML = this.estado
         estadoMesa.className = `mesa-estado ${this.estado.toLowerCase()}`
 
@@ -316,6 +319,7 @@ let total = document.querySelector('#Total')
 let tablaPedido = document.querySelector('#tabla-pedido')
 let btnCobrar = document.querySelector('.cobrar')
 let btnFinalizar = document.querySelector('.cerrar')
+let btnAbrir = document.querySelector('.abrir-cuenta')
 
 contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
 contenedorNoMesas.textContent = `${restaurante.mesasNo} Mesas`
@@ -341,7 +345,6 @@ let btnEvento = (event) => {
         // mesaSeleccionada.muestrame()
         mesaActualSeleccionada = event.target
         btnFinalizar.disabled = true
-
     }
 
 }
@@ -410,12 +413,18 @@ menuGrid.addEventListener('click', (event) => {
         let producto = productos.find(item => item.id == event.target.dataset.id)
         //Crear el pedido
         const pedido = new Pedido(1, producto.nombre, producto.precio)
-        //Agregar el pedido ala comanda
-        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].agregarPedido(pedido)
-        console.log(mesaSeleccionada)
 
-        //Dibujar visualmente la comanda
-        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
+        if (mesaSeleccionada && mesaSeleccionada.comandas.length > 0) {
+
+            //Agregar el pedido ala comanda
+            mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].agregarPedido(pedido)
+            console.log(mesaSeleccionada)
+
+            //Dibujar visualmente la comanda
+            mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
+        } else {
+            alert('Aperture una mesa antes de iniciar')
+        }
 
         btnFinalizar.disabled = true
     }
@@ -442,4 +451,13 @@ btnFinalizar.addEventListener('click', (event) => {
     mesaSeleccionada.eliminarComanda()
     contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
     panelComanda.classList.add('d-none')
+})
+
+btnAbrir.addEventListener('click', (event) => {
+    mesaSeleccionada.aperturarMesa()
+    let comandaObjeto = new Comanda([mesaSeleccionada.id])
+    comandaObjeto.agregarMesa(mesaSeleccionada.id)
+    mesaSeleccionada.ingresarComanda(comandaObjeto)
+    contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
+    mesaSeleccionada.mostrarCuenta()
 })
