@@ -72,6 +72,12 @@ body {
   gap: 0.8rem;
 }
 
+article p,
+article span,
+article h3{
+  pointer-events: none;
+}
+
 .panel-header h2 {
   font-family: "Sora", sans-serif;
   font-size: 1rem;

@@ -323,24 +323,26 @@ let mesaActualSeleccionada;
 let mesaSeleccionada;
 
 let btnEvento = (event) => {
+    if (!event.target.className.includes('mesas-grid')) {
 
+        if (mesaActualSeleccionada != undefined) {
+            mesaActualSeleccionada.style = ''
+        }
 
-    if (mesaActualSeleccionada != undefined) {
-        mesaActualSeleccionada.style = ''
+        mesaSeleccionada = restaurante.mesas.find(item => item.id == event.target.dataset.id)
+        event.target.style = 'background: green'
+
+        if (mesaSeleccionada.estado == estados.Libre) {
+            mesaSeleccionada.muestrame()
+        } else {
+            mesaSeleccionada.mostrarCuenta()
+            mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
+        }
+        // mesaSeleccionada.muestrame()
+        mesaActualSeleccionada = event.target
+        btnFinalizar.disabled = true
+
     }
-
-    mesaSeleccionada = restaurante.mesas.find(item => item.id == event.target.dataset.id)
-    event.target.style = 'background: green'
-
-    if (mesaSeleccionada.estado == estados.Libre) {
-        mesaSeleccionada.muestrame()
-    } else {
-        mesaSeleccionada.mostrarCuenta()
-        mesaSeleccionada.comandas[mesaSeleccionada.comandas.length - 1].renderizar()
-    }
-    // mesaSeleccionada.muestrame()
-    mesaActualSeleccionada = event.target
-    btnFinalizar.disabled = true
 
 }
 
@@ -432,12 +434,12 @@ btnCobrar.addEventListener('click', (event) => {
 
 btnFinalizar.addEventListener('click', (event) => {
     mesaSeleccionada.cobrarMesa()
-        for (let i = 0; i < mesaSeleccionada.mesasUnidas.length; i++) {
+    for (let i = 0; i < mesaSeleccionada.mesasUnidas.length; i++) {
         let mesaAUnir = restaurante.mesas.find(item => item.id == mesaSeleccionada.mesasUnidas[i])
         mesaAUnir.cobrarMesa()
     }
 
     mesaSeleccionada.eliminarComanda()
-   contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
-   panelComanda.classList.add('d-none')
+    contenedorMesas.innerHTML = restaurante.normalizeMesasHTML()
+    panelComanda.classList.add('d-none')
 })
